@@ -1,3 +1,12 @@
+/* ============================================================
+   WWS (WebWalker Web Standard) — STRUCTURE ONLY
+   ------------------------------------------------------------
+   This file defines layout/appearance for EVERY WWS site.
+   Do not put customer-specific content here — that belongs in
+   data.js. Edit this file only when changing the standard for
+   every site at once.
+   ============================================================ */
+
 * { margin:0; padding:0; box-sizing:border-box; }
 html, body { height:100%; background:#222; font-family:'Segoe UI', Arial, sans-serif; }
 
