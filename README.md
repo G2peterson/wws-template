@@ -1,0 +1,2 @@
+# wws-template
+basic-setup
