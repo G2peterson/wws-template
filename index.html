@@ -5,10 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MyBrand — Test Subject (Blank)</title>
 <style>
-  /* ============================================
-     CUSTOMIZE PER CLIENT — these are the only values
-     that should change to re-skin this whole site.
-     ============================================ */
   :root{
     --bg: #EDEDEA;
     --panel: #DCDCD7;
@@ -35,17 +31,25 @@
     align-items: center;
     justify-content: center;
     min-height: 100vh;
-    padding: 20px;
+    overflow: hidden;
+  }
+
+  .viewport {
+    position: relative;
+    overflow: hidden;
+    border-radius: 36px;
+    box-shadow: 0 0 60px rgba(0,0,0,0.5);
   }
 
   .frame {
     width: 1080px;
     height: 1920px;
     background: var(--bg);
-    border-radius: 36px;
-    box-shadow: 0 0 60px rgba(0,0,0,0.5);
     overflow: hidden;
-    position: relative;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform-origin: top left;
   }
 
   .track {
@@ -247,28 +251,33 @@
     text-transform: uppercase;
   }
 
-  .swipe-dots {
+  .nav-arrow {
     position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 14px;
-    z-index: 5;
-  }
-  .swipe-dots .dot {
-    width: 12px;
-    height: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 64px;
+    height: 64px;
     border-radius: 50%;
-    background: var(--border);
+    background: var(--panel);
+    border: 2px solid var(--border);
+    color: var(--accent);
+    font-size: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 6;
+    user-select: none;
   }
-  .swipe-dots .dot.active { background: var(--accent); }
+  .nav-arrow.left { left: 24px; }
+  .nav-arrow.right { right: 24px; }
 </style>
 </head>
 <body>
 
 <div class="stage">
-  <div class="frame">
+  <div class="viewport" id="viewport">
+  <div class="frame" id="frame">
     <div class="track" id="track">
 
       <!-- SWIPE LEFT: TOOLS / SETTINGS -->
@@ -341,68 +350,4 @@
           <p class="caption">Caption goes here</p>
         </div>
         <div class="slot">
-          <div class="box">[ Slot 3 ]</div>
-          <p class="caption">Caption goes here</p>
-        </div>
-
-        <p class="footer-hint">← Swipe left for Me</p>
-      </div>
-
-    </div>
-
-    <div class="swipe-dots" id="dots">
-      <div class="dot" data-index="0"></div>
-      <div class="dot active" data-index="1"></div>
-      <div class="dot" data-index="2"></div>
-    </div>
-  </div>
-</div>
-
-<script>
-  function toggleRow(el){
-    el.classList.toggle('open');
-  }
-
-  // Keep the dots in sync with whichever panel is actually in view,
-  // and start centered on "Me" on load.
-  const track = document.getElementById('track');
-  const dots = document.querySelectorAll('#dots .dot');
-  const panelWidth = 1080;
-
-  window.addEventListener('load', function(){
-    track.scrollLeft = panelWidth; // start on center panel
-  });
-
-  track.addEventListener('scroll', function(){
-    const index = Math.round(track.scrollLeft / panelWidth);
-    dots.forEach(d => d.classList.remove('active'));
-    if (dots[index]) dots[index].classList.add('active');
-  });
-</script>
-
-</body>
-</html>
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WWS Site</title>
-<link rel="stylesheet" href="style.css">
-</head>
-<body>
-
-<div class="stage">
-  <div class="frame">
-    <div class="track" id="track">
-      <!-- Panels are built by script.js from data.js -->
-    </div>
-    <div class="swipe-dots" id="swipeDots"></div>
-  </div>
-</div>
-
-<script src="data.js"></script>
-<script src="script.js"></script>
-</body>
-</html>
-
+          <div class="bo
