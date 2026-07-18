@@ -1,4 +1,388 @@
 <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MyBrand — Test Subject (Blank)</title>
+<style>
+  /* ============================================
+     CUSTOMIZE PER CLIENT — these are the only values
+     that should change to re-skin this whole site.
+     ============================================ */
+  :root{
+    --bg: #EDEDEA;
+    --panel: #DCDCD7;
+    --panel-open: #CFCFC9;
+    --text: #1F1F1F;
+    --text-soft: #55554F;
+    --accent: #6B7280;
+    --border: #B9B9B2;
+    --logo-bg: #1F1F1F;
+    --font-display: 'Georgia', serif;
+    --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    height: 100%;
+    background: #000;
+    font-family: var(--font-body);
+  }
+
+  .stage {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+  }
+
+  .frame {
+    width: 1080px;
+    height: 1920px;
+    background: var(--bg);
+    border-radius: 36px;
+    box-shadow: 0 0 60px rgba(0,0,0,0.5);
+    overflow: hidden;
+    position: relative;
+  }
+
+  .track {
+    height: 1920px;
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+  }
+  .panel {
+    min-width: 1080px;
+    height: 1920px;
+    scroll-snap-align: center;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .panel-label {
+    position: absolute;
+    top: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 20px;
+    letter-spacing: 3px;
+    color: var(--text-soft);
+    text-transform: uppercase;
+    z-index: 5;
+  }
+
+  /* ===== CENTER PANEL — Landing / Me ===== */
+  .panel-center { align-items: center; }
+  .contact-block {
+    width: 100%;
+    padding: 70px 60px 30px;
+    text-align: center;
+    border-bottom: 2px solid var(--border);
+  }
+  .contact-block .brand-name {
+    font-family: var(--font-display);
+    font-size: 44px;
+    color: var(--text);
+    margin-bottom: 14px;
+  }
+  .contact-block .line {
+    font-size: 26px;
+    color: var(--text-soft);
+    margin-bottom: 6px;
+  }
+  .avatar-zone {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 20px;
+  }
+  .avatar-placeholder {
+    width: 420px;
+    height: 700px;
+    border: 4px dashed var(--border);
+    border-radius: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    color: var(--text-soft);
+    text-align: center;
+    padding: 20px;
+  }
+  .dock {
+    width: 100%;
+    padding: 24px 40px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    border-top: 2px solid var(--border);
+  }
+  .dock .slot {
+    width: 90px;
+    height: 90px;
+    border-radius: 20px;
+    background: var(--panel);
+    border: 2px dashed var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: var(--text-soft);
+  }
+  .socials {
+    width: 100%;
+    padding: 24px 40px 40px;
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    border-top: 2px solid var(--border);
+  }
+  .socials .icon {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: var(--logo-bg);
+    color: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    text-align: center;
+  }
+
+  /* ===== LEFT PANEL — Tools / Settings & Info ===== */
+  .panel-tools { padding: 130px 56px 0 56px; }
+  h1.page-title {
+    font-family: var(--font-display);
+    font-size: 56px;
+    color: var(--text);
+    text-align: center;
+    margin-bottom: 48px;
+  }
+  .row {
+    background: var(--panel);
+    border-radius: 16px;
+    padding: 32px 36px;
+    margin-bottom: 24px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+  .row.open { background: var(--panel-open); }
+  .row-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .row-head span.label {
+    font-size: 32px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .row-head span.arrow {
+    font-size: 36px;
+    color: var(--accent);
+    transition: transform 0.2s ease;
+  }
+  .row.open .row-head span.arrow { transform: rotate(90deg); }
+  .row-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+  .row.open .row-body { max-height: 600px; margin-top: 20px; }
+  .row-body p {
+    font-size: 24px;
+    line-height: 1.5;
+    color: var(--text-soft);
+  }
+  .cookie-note {
+    text-align: center;
+    font-size: 24px;
+    color: var(--text-soft);
+    margin-top: 36px;
+    padding: 0 20px;
+  }
+
+  /* ===== RIGHT PANEL(S) — Home Page(s) ===== */
+  .panel-home { padding: 130px 56px 0 56px; overflow-y: auto; }
+  .slot {
+    background: var(--panel);
+    border-radius: 20px;
+    padding: 24px;
+    margin-bottom: 28px;
+  }
+  .slot .box {
+    width: 100%;
+    min-height: 360px;
+    border-radius: 12px;
+    border: 3px dashed var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: var(--text-soft);
+    text-align: center;
+    padding: 20px;
+  }
+  .slot .caption {
+    font-size: 24px;
+    color: var(--text-soft);
+    text-align: center;
+    margin-top: 14px;
+  }
+
+  .footer-hint {
+    text-align: center;
+    font-size: 20px;
+    letter-spacing: 2px;
+    color: var(--text-soft);
+    padding: 30px 0;
+    text-transform: uppercase;
+  }
+
+  .swipe-dots {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 14px;
+    z-index: 5;
+  }
+  .swipe-dots .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--border);
+  }
+  .swipe-dots .dot.active { background: var(--accent); }
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <div class="frame">
+    <div class="track" id="track">
+
+      <!-- SWIPE LEFT: TOOLS / SETTINGS -->
+      <div class="panel panel-tools">
+        <div class="panel-label">Tools</div>
+        <h1 class="page-title">Settings & Info</h1>
+
+        <div class="row" onclick="toggleRow(this)">
+          <div class="row-head">
+            <span class="label">Privacy Policy</span>
+            <span class="arrow">›</span>
+          </div>
+          <div class="row-body">
+            <p>This site may collect basic contact information you choose to provide (such as name, phone number, or email) so we can communicate with you. We do not sell your personal information to third parties. Photos or images used to create your avatar are used only to build your personal site and are not shared publicly without your permission.</p>
+          </div>
+        </div>
+
+        <div class="row" onclick="toggleRow(this)">
+          <div class="row-head">
+            <span class="label">Terms of Service</span>
+            <span class="arrow">›</span>
+          </div>
+          <div class="row-body">
+            <p>This site is provided as-is for personal branding and contact purposes. Content on this page belongs to the site owner unless otherwise noted. By using this site, you agree not to misrepresent yourself or use it for unlawful purposes. Questions or concerns? Contact us using the information on this site.</p>
+          </div>
+        </div>
+
+        <p class="cookie-note">This site does not use tracking cookies.</p>
+        <p class="footer-hint">Swipe right for Me →</p>
+      </div>
+
+      <!-- CENTER: ME / LANDING -->
+      <div class="panel panel-center">
+        <div class="panel-label">Me</div>
+        <div class="contact-block">
+          <div class="brand-name">[ Name ]</div>
+          <div class="line">[ Phone ]</div>
+          <div class="line">[ Email ]</div>
+          <div class="line">[ yourname.mybrand.com ]</div>
+        </div>
+        <div class="avatar-zone">
+          <div class="avatar-placeholder">[ Avatar / Hero Image ]</div>
+        </div>
+        <div class="dock">
+          <div class="slot">+</div>
+          <div class="slot">+</div>
+          <div class="slot">+</div>
+          <div class="slot">+</div>
+          <div class="slot">+</div>
+        </div>
+        <div class="socials">
+          <div class="icon">FB</div>
+          <div class="icon">X</div>
+          <div class="icon">IG</div>
+          <div class="icon">+</div>
+        </div>
+      </div>
+
+      <!-- SWIPE RIGHT: HOME PAGE 1 (base package — 3 slots) -->
+      <div class="panel panel-home">
+        <div class="panel-label">Home Page 1</div>
+        <h1 class="page-title">Home Page</h1>
+
+        <div class="slot">
+          <div class="box">[ Slot 1 ]</div>
+          <p class="caption">Caption goes here</p>
+        </div>
+        <div class="slot">
+          <div class="box">[ Slot 2 ]</div>
+          <p class="caption">Caption goes here</p>
+        </div>
+        <div class="slot">
+          <div class="box">[ Slot 3 ]</div>
+          <p class="caption">Caption goes here</p>
+        </div>
+
+        <p class="footer-hint">← Swipe left for Me</p>
+      </div>
+
+    </div>
+
+    <div class="swipe-dots" id="dots">
+      <div class="dot" data-index="0"></div>
+      <div class="dot active" data-index="1"></div>
+      <div class="dot" data-index="2"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function toggleRow(el){
+    el.classList.toggle('open');
+  }
+
+  // Keep the dots in sync with whichever panel is actually in view,
+  // and start centered on "Me" on load.
+  const track = document.getElementById('track');
+  const dots = document.querySelectorAll('#dots .dot');
+  const panelWidth = 1080;
+
+  window.addEventListener('load', function(){
+    track.scrollLeft = panelWidth; // start on center panel
+  });
+
+  track.addEventListener('scroll', function(){
+    const index = Math.round(track.scrollLeft / panelWidth);
+    dots.forEach(d => d.classList.remove('active'));
+    if (dots[index]) dots[index].classList.add('active');
+  });
+</script>
+
+</body>
+</html>
+<!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
